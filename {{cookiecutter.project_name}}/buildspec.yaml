@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+    commands:
+      - pip install aws-sam-cli
+  build:
+    commands:
+      - echo "Starting SAM packaging `date` in `pwd`"
+      - sam build
+      - aws cloudformation package --template-file .aws-sam/build/template.yaml --s3-bucket $BUILD_OUTPUT_BUCKET --output-template-file packaged.yaml
+  post_build:
+    commands:
+      - echo "SAM packaging completed on `date`"
+
+artifacts:
+  files:
+    - packaged.yaml
+  discard-paths: yes
+
